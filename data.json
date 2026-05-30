@@ -1,10 +1,10 @@
 {
   "restaurant": {
-    "name": "Grilli",
+    "name": "Bilal",
     "address1": "Kampala Road, Kampala, Uganda",
     "address2": "Kampala Road, Kampala, Uganda",
     "phone": "+256 749 445 501",
-    "email": "booking@grilli.ug",
+    "email": "booking@bilal.ug",
     "hours": "Daily : 8.00 am to 10.00 pm"
   },
   "special": {

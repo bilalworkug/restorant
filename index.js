@@ -24,7 +24,7 @@ app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname)));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
-    secret: 'grilli-secret-key-2026',
+    secret: 'bilal-secret-key-2026',
     resave: false,
     saveUninitialized: true
 }));
