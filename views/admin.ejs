@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - Grilli</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0d1117; color: #fff; margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar layout */
+        .sidebar { width: 250px; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border-right: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; }
+        .sidebar h2 { padding: 30px 20px; margin: 0; color: hsl(35, 100%, 55%); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .nav-links { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
+        .nav-links li { border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .nav-links a { display: block; padding: 20px; color: #ccc; text-decoration: none; font-weight: bold; transition: 0.2s; }
+        .nav-links a:hover, .nav-links a.active { background: rgba(255,255,255,0.1); color: #fff; border-left: 4px solid hsl(35, 100%, 55%); }
+        .sidebar-bottom { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .sidebar-bottom a { color: #ff6b6b; text-decoration: none; display: block; margin-bottom: 10px; }
+        .sidebar-bottom a.live { color: hsl(35, 100%, 55%); }
+
+        /* Main content */
+        .main-content { flex-grow: 1; padding: 40px; overflow-y: auto; }
+        .card { background: rgba(255,255,255,0.05); padding: 25px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 30px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-size: 14px; color: #ccc; }
+        input, textarea { width: 100%; padding: 10px; box-sizing: border-box; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 6px; font-family: inherit; }
+        .btn { padding: 12px 24px; background-color: hsl(35, 100%, 55%); color: black; border: none; font-weight: bold; border-radius: 6px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        .success { background: #2ea043; color: white; padding: 15px; border-radius: 6px; margin-bottom: 20px; }
+        
+        /* Sections toggle */
+        .section-tab { display: none; }
+        .section-tab.active { display: block; }
+
+        /* Drag and Drop zone */
+        .drop-zone { border: 2px dashed rgba(255,255,255,0.3); padding: 40px; text-align: center; border-radius: 12px; background: rgba(0,0,0,0.2); transition: 0.3s; margin-bottom: 20px; cursor: pointer; }
+        .drop-zone.dragover { background: rgba(255,255,255,0.1); border-color: hsl(35, 100%, 55%); }
+        .drop-zone p { margin: 0; color: #ccc; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <ul class="nav-links">
+            <li><a href="#" onclick="showTab('menu-tab', this)" class="active">Menu Items</a></li>
+            <li><a href="#" onclick="showTab('special-tab', this)">Special Dish</a></li>
+            <li><a href="#" onclick="showTab('events-tab', this)">Events</a></li>
+        </ul>
+        <div class="sidebar-bottom">
+            <a href="/" target="_blank" class="live">View Live Site ↗</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <% if (typeof success !== 'undefined' || true) { %>
+            <div id="successMsg" class="success" style="display:none;">Changes saved successfully!</div>
+        <% } %>
+
+        <!-- Global Drag & Drop Zone -->
+        <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+            <p><strong>Drag & Drop an image here</strong> or click to upload</p>
+            <p style="font-size:12px; margin-top:5px; color:#888;">(After uploading, copy the URL to paste into an image field below)</p>
+            <input type="file" id="fileInput" style="display:none" accept="image/*">
+        </div>
+        <div id="uploadResult" style="margin-bottom:20px; color: hsl(35, 100%, 55%); font-weight:bold; display:none;">
+            Uploaded! URL: <input type="text" id="uploadedUrl" readonly style="width:70%; display:inline; margin-left:10px;">
+        </div>
+
+        <form action="/admin/update" method="POST">
+            
+            <div id="menu-tab" class="section-tab active">
+                <h1 style="color:hsl(35, 100%, 55%);">Menu Items</h1>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <% data.menu.forEach(function(item, index) { %>
+                        <div class="card" style="margin-bottom: 0;">
+                            <h3>Item <%= index + 1 %></h3>
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" name="menu[<%= index %>][name]" value="<%= item.name %>">
+                            </div>
+                            <div class="form-group" style="display: flex; gap: 10px;">
+                                <div style="flex: 1;">
+                                    <label>Price</label>
+                                    <input type="text" name="menu[<%= index %>][price]" value="<%= item.price %>">
+                                </div>
+                                <div style="flex: 1;">
+                                    <label>Badge</label>
+                                    <input type="text" name="menu[<%= index %>][badge]" value="<%= item.badge %>">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Image URL</label>
+                                <input type="text" name="menu[<%= index %>][image]" value="<%= item.image %>">
+                                <div style="margin-top:5px;">
+                                    <img src="<%= item.image %>" style="max-height:50px; border-radius:4px; border:1px solid rgba(255,255,255,0.2);">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea name="menu[<%= index %>][desc]" rows="2"><%= item.desc %></textarea>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+
+            <div id="special-tab" class="section-tab">
+                <h1 style="color:hsl(35, 100%, 55%);">Special Dish</h1>
+                <div class="card">
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" name="specialTitle" value="<%= data.special.title %>">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea name="specialDescription" rows="3"><%= data.special.description %></textarea>
+                    </div>
+                    <div style="display: flex; gap: 20px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Old Price</label>
+                            <input type="text" name="specialOldPrice" value="<%= data.special.oldPrice %>">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>New Price</label>
+                            <input type="text" name="specialNewPrice" value="<%= data.special.newPrice %>">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="events-tab" class="section-tab">
+                <h1 style="color:hsl(35, 100%, 55%);">Upcoming Events</h1>
+                <div id="events-container">
+                    <% data.events.forEach(function(event, index) { %>
+                        <div class="card event-item">
+                            <div class="form-group">
+                                <label>Event Title</label>
+                                <input type="text" name="event[title]" value="<%= event.title %>">
+                            </div>
+                            <div style="display: flex; gap: 20px;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label>Subtitle (Category)</label>
+                                    <input type="text" name="event[subtitle]" value="<%= event.subtitle %>">
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label>Date (e.g. 15/09/2026)</label>
+                                    <input type="text" name="event[date]" value="<%= event.date %>">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Image URL (Paste from upload zone above)</label>
+                                <input type="text" name="event[image]" value="<%= event.image %>">
+                                <div style="margin-top:10px;">
+                                    <img src="<%= event.image %>" style="max-height:80px; border-radius:6px; border:1px solid rgba(255,255,255,0.2);">
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+
+            <div style="position: sticky; bottom: 0; padding: 20px 0; background: #0d1117; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 40px; text-align:right;">
+                <button type="submit" class="btn" style="padding: 15px 40px; font-size: 18px;">Save All Changes</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Tab logic
+        function showTab(tabId, el) {
+            document.querySelectorAll('.section-tab').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('success')) {
+            document.getElementById('successMsg').style.display = 'block';
+            setTimeout(() => document.getElementById('successMsg').style.display = 'none', 3000);
+        }
+
+        // Drag and drop upload logic
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', (e) => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length) {
+                uploadFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                uploadFile(e.target.files[0]);
+            }
+        });
+
+        function uploadFile(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+            
+            dropZone.innerHTML = '<p>Uploading...</p>';
+
+            fetch('/admin/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.url) {
+                    document.getElementById('uploadResult').style.display = 'block';
+                    document.getElementById('uploadedUrl').value = data.url;
+                    dropZone.innerHTML = '<p><strong>Drag & Drop an image here</strong> or click to upload</p><p style="font-size:12px; margin-top:5px; color:#888;">(After uploading, copy the URL to paste into an image field below)</p>';
+                } else {
+                    alert('Upload failed');
+                }
+            })
+            .catch(err => {
+                alert('Error uploading');
+                console.error(err);
+            });
+        }
+    </script>
+</body>
+</html>

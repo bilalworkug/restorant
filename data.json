@@ -1,0 +1,80 @@
+{
+  "restaurant": {
+    "name": "Grilli",
+    "address1": "Kampala Road, Kampala, Uganda",
+    "address2": "Kampala Road, Kampala, Uganda",
+    "phone": "+256 749 445 501",
+    "email": "booking@grilli.ug",
+    "hours": "Daily : 8.00 am to 10.00 pm"
+  },
+  "special": {
+    "title": "Goat Muchomo",
+    "description": "Premium slow-roasted goat meat served with authentic Ugandan spices and sides.",
+    "oldPrice": "UGX 40,000",
+    "newPrice": "UGX 20,000"
+  },
+  "menu": [
+    {
+      "name": "Kachumbari (Ugandan Salad)",
+      "badge": "Seasonal",
+      "price": "UGX 25,500",
+      "desc": "Fresh tomatoes, green bell pepper, sliced cucumber onion, olives, and feta cheese.",
+      "image": "./assets/images/menu-1.png"
+    },
+    {
+      "name": "Luwombo",
+      "badge": "",
+      "price": "UGX 40,000",
+      "desc": "Traditional Ugandan stew steamed in banana leaves. A rich and flavorful experience.",
+      "image": "./assets/images/menu-2.png"
+    },
+    {
+      "name": "Matooke and G-Nut Sauce",
+      "badge": "",
+      "price": "UGX 10,000",
+      "desc": "Classic Ugandan staple of steamed green bananas with rich peanut sauce.",
+      "image": "./assets/images/menu-3.png"
+    },
+    {
+      "name": "Muchomo",
+      "badge": "New",
+      "price": "UGX 39,000",
+      "desc": "Sizzling roasted meat served with a side of kachumbari and gonja.",
+      "image": "./assets/images/menu-4.png"
+    },
+    {
+      "name": "Rolex",
+      "badge": "",
+      "price": "UGX 25,000",
+      "desc": "Famous Ugandan street food: rolled chapati with a vegetable omelette.",
+      "image": "./assets/images/menu-5.png"
+    },
+    {
+      "name": "Whole Tilapia",
+      "badge": "",
+      "price": "UGX 49,000",
+      "desc": "Deep-fried whole Lake Victoria tilapia served with fries and fresh salad.",
+      "image": "./assets/images/menu-6.png"
+    }
+  ],
+  "events": [
+    {
+      "title": "Flavour so good you’ll try to eat with your eyes.",
+      "subtitle": "Food, Flavour",
+      "date": "15/09/2026",
+      "image": "./assets/images/event-1.jpg"
+    },
+    {
+      "title": "Healthy choices for a better lifestyle.",
+      "subtitle": "Healthy Food",
+      "date": "08/09/2026",
+      "image": "./assets/images/event-2.jpg"
+    },
+    {
+      "title": "Learn how to make our famous luwombo.",
+      "subtitle": "Recipe",
+      "date": "03/09/2026",
+      "image": "./assets/images/event-3.jpg"
+    }
+  ]
+}
